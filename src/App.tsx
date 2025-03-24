@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import LoanApplication from "./pages/LoanApplication";
+import LoanApplicationDashboardPage from "./pages/LoanApplicationDashboard";
 import LoanOffersPage from "./pages/LoanOffers";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/loan-application" element={<LoanApplication />} />
+            <Route path="/loan-application-dashboard" element={<LoanApplicationDashboardPage />} />
             <Route path="/loan-offers" element={<LoanOffersPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
