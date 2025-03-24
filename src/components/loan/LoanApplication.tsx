@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -96,7 +95,7 @@ export const LoanApplicationForm: React.FC = () => {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <Label>Loan Amount</Label>
-                <span className="text-sm font-medium">${amount.toLocaleString()}</span>
+                <span className="text-sm font-medium">₹{amount.toLocaleString()}</span>
               </div>
               <Slider
                 value={[amount]}
@@ -126,7 +125,7 @@ export const LoanApplicationForm: React.FC = () => {
               <Input
                 id="income"
                 type="number"
-                placeholder="e.g. 60000"
+                placeholder="e.g. 600000"
                 value={income}
                 onChange={(e) => setIncome(e.target.value)}
                 required
@@ -154,7 +153,7 @@ export const LoanApplicationForm: React.FC = () => {
                   {eligibilityResult.eligible 
                     ? "Good news! You're eligible for this loan. Please continue with your application."
                     : eligibilityResult.reason + (eligibilityResult.maxAmount 
-                      ? ` We can offer up to $${eligibilityResult.maxAmount.toFixed(0)}.`
+                      ? ` We can offer up to ₹${eligibilityResult.maxAmount.toFixed(0)}.`
                       : "")}
                 </AlertDescription>
               </Alert>

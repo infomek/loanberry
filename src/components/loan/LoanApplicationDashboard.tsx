@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -105,9 +104,9 @@ export const LoanApplicationDashboard: React.FC = () => {
                 className="my-4"
               />
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">$1,000</span>
-                <span className="text-lg font-medium text-primary">${loanAmount.toLocaleString()}</span>
-                <span className="text-sm text-muted-foreground">$50,000</span>
+                <span className="text-sm text-muted-foreground">₹1,000</span>
+                <span className="text-lg font-medium text-primary">₹{loanAmount.toLocaleString()}</span>
+                <span className="text-sm text-muted-foreground">₹50,000</span>
               </div>
             </div>
           </div>
@@ -172,7 +171,7 @@ export const LoanApplicationDashboard: React.FC = () => {
           <div className="grid grid-cols-3 gap-8 py-4">
             <div>
               <h3 className="text-sm text-muted-foreground">Monthly Payment</h3>
-              <p className="text-2xl font-semibold">${monthlyPayment.toFixed(0)}</p>
+              <p className="text-2xl font-semibold">₹{monthlyPayment.toFixed(0)}</p>
             </div>
             <div>
               <h3 className="text-sm text-muted-foreground">Interest Rate</h3>
@@ -180,7 +179,7 @@ export const LoanApplicationDashboard: React.FC = () => {
             </div>
             <div>
               <h3 className="text-sm text-muted-foreground">Total Repayment</h3>
-              <p className="text-2xl font-semibold">${totalRepayment.toFixed(0)}</p>
+              <p className="text-2xl font-semibold">₹{totalRepayment.toFixed(0)}</p>
             </div>
           </div>
           

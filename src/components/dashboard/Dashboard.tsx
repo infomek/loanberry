@@ -124,14 +124,14 @@ export const DashboardContent: React.FC = () => {
                   </span>
                 </div>
                 <CardDescription>
-                  ${loan.amount.toLocaleString()} loan at {loan.interestRate}% interest
+                  ₹{loan.amount.toLocaleString()} loan at {loan.interestRate}% interest
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-4 space-y-6">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-6">
                   <div>
                     <div className="text-sm text-muted-foreground">Monthly Payment</div>
-                    <div className="text-2xl font-semibold">${loan.monthlyPayment.toFixed(2)}</div>
+                    <div className="text-2xl font-semibold">₹{loan.monthlyPayment.toFixed(2)}</div>
                   </div>
                   <div>
                     <div className="text-sm text-muted-foreground">Total Term</div>
@@ -159,19 +159,19 @@ export const DashboardContent: React.FC = () => {
                   <div className="bg-primary/5 p-3 rounded-lg text-center">
                     <div className="text-xs text-muted-foreground">Total Paid</div>
                     <div className="font-semibold">
-                      ${(loan.monthlyPayment * loan.paymentsMade).toFixed(2)}
+                      ₹{(loan.monthlyPayment * loan.paymentsMade).toFixed(2)}
                     </div>
                   </div>
                   <div className="bg-primary/5 p-3 rounded-lg text-center">
                     <div className="text-xs text-muted-foreground">Remaining</div>
                     <div className="font-semibold">
-                      ${(loan.monthlyPayment * loan.remainingPayments).toFixed(2)}
+                      ₹{(loan.monthlyPayment * loan.remainingPayments).toFixed(2)}
                     </div>
                   </div>
                   <div className="bg-primary/5 p-3 rounded-lg text-center">
                     <div className="text-xs text-muted-foreground">Total Interest</div>
                     <div className="font-semibold">
-                      ${(loan.totalPayment - loan.amount).toFixed(2)}
+                      ₹{(loan.totalPayment - loan.amount).toFixed(2)}
                     </div>
                   </div>
                 </div>
@@ -190,7 +190,7 @@ export const DashboardContent: React.FC = () => {
               <CardContent className="pt-4">
                 <div className="flex flex-col items-center justify-center text-center p-4 space-y-4">
                   <div className="text-sm text-muted-foreground">Amount Due</div>
-                  <div className="text-3xl font-bold">${loan.monthlyPayment.toFixed(2)}</div>
+                  <div className="text-3xl font-bold">₹{loan.monthlyPayment.toFixed(2)}</div>
                   <div className="text-sm text-muted-foreground">Due Date</div>
                   <div className="text-lg font-semibold">{formatDate(loan.nextPaymentDate)}</div>
                   <Button className="w-full">Pay Now</Button>
@@ -228,7 +228,7 @@ export const DashboardContent: React.FC = () => {
                             {formatDate(payment.date)}
                           </td>
                           <td className="py-3 px-4">
-                            ${payment.amount.toFixed(2)}
+                            ₹{payment.amount.toFixed(2)}
                           </td>
                           <td className="py-3 px-4">
                             <span className={`inline-block text-xs px-2 py-1 rounded-full ${getPaymentStatusColor(payment.status)}`}>

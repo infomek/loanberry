@@ -49,7 +49,7 @@ export const LoanCalculator: React.FC = () => {
         <div className="space-y-2">
           <div className="flex justify-between">
             <span className="text-sm font-medium">Loan Amount</span>
-            <span className="text-sm font-medium">${amount.toLocaleString()}</span>
+            <span className="text-sm font-medium">₹{amount.toLocaleString()}</span>
           </div>
           <Slider
             value={[amount]}
@@ -59,8 +59,8 @@ export const LoanCalculator: React.FC = () => {
             onValueChange={(values) => setAmount(values[0])}
           />
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span>$1,000</span>
-            <span>$50,000</span>
+            <span>₹1,000</span>
+            <span>₹50,000</span>
           </div>
         </div>
 
@@ -86,7 +86,7 @@ export const LoanCalculator: React.FC = () => {
           <div className="bg-primary/5 p-4 rounded-lg">
             <div className="text-sm text-muted-foreground">Monthly Payment</div>
             <div className="text-2xl font-bold">
-              {isCalculating ? 'Calculating...' : `$${monthlyPayment.toFixed(2)}`}
+              {isCalculating ? 'Calculating...' : `₹${monthlyPayment.toFixed(2)}`}
             </div>
           </div>
           <div className="bg-primary/5 p-4 rounded-lg">
@@ -98,13 +98,13 @@ export const LoanCalculator: React.FC = () => {
           <div className="bg-primary/5 p-4 rounded-lg">
             <div className="text-sm text-muted-foreground">Total Interest</div>
             <div className="text-2xl font-bold">
-              {isCalculating ? 'Calculating...' : `$${totalInterest.toFixed(2)}`}
+              {isCalculating ? 'Calculating...' : `₹${totalInterest.toFixed(2)}`}
             </div>
           </div>
           <div className="bg-primary/5 p-4 rounded-lg">
             <div className="text-sm text-muted-foreground">Total Payment</div>
             <div className="text-2xl font-bold">
-              {isCalculating ? 'Calculating...' : `$${totalPayment.toFixed(2)}`}
+              {isCalculating ? 'Calculating...' : `₹${totalPayment.toFixed(2)}`}
             </div>
           </div>
         </div>

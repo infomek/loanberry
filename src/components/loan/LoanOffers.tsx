@@ -89,7 +89,7 @@ export const LoanOffers: React.FC = () => {
             selectedOfferId === offer.id ? 'border-primary ring-2 ring-primary/20' : ''
           }`}>
             <CardHeader className="bg-primary/5 pb-2">
-              <CardTitle className="text-xl text-center">${offer.amount.toLocaleString()}</CardTitle>
+              <CardTitle className="text-xl text-center">₹{offer.amount.toLocaleString()}</CardTitle>
               <CardDescription className="text-center">
                 {offer.term} month term
               </CardDescription>
@@ -101,15 +101,15 @@ export const LoanOffers: React.FC = () => {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Monthly Payment</span>
-                <span className="font-medium">${offer.monthlyPayment.toFixed(2)}</span>
+                <span className="font-medium">₹{offer.monthlyPayment.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Total Repayment</span>
-                <span className="font-medium">${offer.totalPayment.toFixed(2)}</span>
+                <span className="font-medium">₹{offer.totalPayment.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Total Interest</span>
-                <span className="font-medium">${(offer.totalPayment - offer.amount).toFixed(2)}</span>
+                <span className="font-medium">₹{(offer.totalPayment - offer.amount).toFixed(2)}</span>
               </div>
             </CardContent>
             <CardFooter>
