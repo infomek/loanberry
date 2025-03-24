@@ -24,14 +24,16 @@ const LoanOffersPage = () => {
 
   return (
     <Layout>
-      <div className="py-12 md:py-24">
-        <div className="mb-8 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Loan Offers</h1>
-          <Link to="/loan-application-dashboard">
-            <Button variant="outline">Back to Application</Button>
-          </Link>
+      <div className="py-12 md:py-16">
+        <div className="container px-4 md:px-6">
+          <div className="mb-8 flex justify-between items-center">
+            <h1 className="text-2xl font-bold">Loan Offers</h1>
+            <Link to="/loan-application-dashboard">
+              <Button variant="outline">Back to Application</Button>
+            </Link>
+          </div>
+          <LoanOffers />
         </div>
-        <LoanOffers />
       </div>
     </Layout>
   );
