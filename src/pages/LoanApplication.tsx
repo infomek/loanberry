@@ -2,19 +2,10 @@
 import React from 'react';
 import { LoanApplicationForm } from '../components/loan/LoanApplication';
 import { Layout } from '../components/Layout';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useRequireAuth } from '../hooks/useRequireAuth';
 
 const LoanApplication = () => {
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-  }, [isAuthenticated, navigate]);
+  const { isAuthenticated } = useRequireAuth();
 
   if (!isAuthenticated) {
     return null;
