@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { calculateLoan } from '../../services/api';
+import { Link } from 'react-router-dom';
+import { Shield } from 'lucide-react';
 
 export const LoanCalculator: React.FC = () => {
   const [amount, setAmount] = useState(10000);
@@ -109,8 +111,16 @@ export const LoanCalculator: React.FC = () => {
           </div>
         </div>
 
-        <Button className="w-full mt-6">Apply For This Loan</Button>
+        <Button className="w-full mt-6" asChild>
+          <Link to="/loan-application">Apply For This Loan</Link>
+        </Button>
       </CardContent>
+      <CardFooter className="flex justify-center border-t pt-6">
+        <Link to="/civil-score-check" className="text-sm flex items-center gap-1 text-primary hover:underline">
+          <Shield className="h-4 w-4" />
+          Check your civil score to get better interest rates
+        </Link>
+      </CardFooter>
     </Card>
   );
 };

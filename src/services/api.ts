@@ -1,4 +1,3 @@
-
 // Mock API service - This would connect to a real backend in a production app
 
 interface LoanApplication {
@@ -204,5 +203,110 @@ export const calculateLoan = async (
     totalPayment,
     interestRate,
     totalInterest
+  };
+};
+
+// Check civil score
+export const checkCivilScore = async (
+  userId: string,
+  fullName: string,
+  email: string,
+  phone: string,
+  panNumber: string
+): Promise<{ score: number; status: 'excellent' | 'good' | 'fair' | 'poor'; message: string }> => {
+  await apiDelay();
+  
+  // Mock civil score calculation
+  // In a real app, this would call a credit bureau API
+  const randomScore = Math.floor(Math.random() * 300) + 500; // Random score between 500-800
+  
+  let status: 'excellent' | 'good' | 'fair' | 'poor';
+  let message: string;
+  
+  if (randomScore >= 750) {
+    status = 'excellent';
+    message = 'Your credit score is excellent. You qualify for our best rates!';
+  } else if (randomScore >= 700) {
+    status = 'good';
+    message = 'Your credit score is good. You qualify for competitive rates.';
+  } else if (randomScore >= 650) {
+    status = 'fair';
+    message = 'Your credit score is fair. You may qualify for standard rates.';
+  } else {
+    status = 'poor';
+    message = 'Your credit score needs improvement. Limited loan options available.';
+  }
+  
+  return {
+    score: randomScore,
+    status,
+    message
+  };
+};
+
+// Add user bank details
+export const addBankDetails = async (
+  userId: string,
+  bankDetails: {
+    accountNumber: string;
+    ifscCode: string;
+    accountName: string;
+    bankName: string;
+  }
+): Promise<{ success: boolean; message: string }> => {
+  await apiDelay();
+  
+  // Mock bank details validation
+  // In a real app, this would validate with a banking API
+  if (bankDetails.ifscCode.length !== 11) {
+    return { 
+      success: false, 
+      message: 'Invalid IFSC code. Please enter a valid 11-character IFSC code.' 
+    };
+  }
+  
+  if (bankDetails.accountNumber.length < 9 || bankDetails.accountNumber.length > 18) {
+    return { 
+      success: false, 
+      message: 'Invalid account number. Please enter a valid account number.' 
+    };
+  }
+  
+  // Store bank details (mock implementation)
+  return {
+    success: true,
+    message: 'Bank details added successfully'
+  };
+};
+
+// Get user profile
+export const getUserProfile = async (): Promise<{
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  civilScore?: number;
+  bankDetails?: {
+    accountNumber: string;
+    ifscCode: string;
+    accountName: string;
+    bankName: string;
+  }
+}> => {
+  await apiDelay();
+  
+  // Mock user profile data
+  return {
+    name: "John Doe",
+    email: "john.doe@example.com",
+    phone: "9876543210",
+    address: "123 Main Street, Mumbai, Maharashtra",
+    civilScore: 750,
+    bankDetails: {
+      accountNumber: "XXXX5678",
+      ifscCode: "SBIN0001234",
+      accountName: "John Doe",
+      bankName: "State Bank of India"
+    }
   };
 };

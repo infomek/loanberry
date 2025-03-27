@@ -12,6 +12,8 @@ import Dashboard from "./pages/Dashboard";
 import LoanApplication from "./pages/LoanApplication";
 import LoanApplicationDashboardPage from "./pages/LoanApplicationDashboard";
 import LoanOffersPage from "./pages/LoanOffers";
+import CivilScoreCheckPage from "./pages/CivilScoreCheck";
+import ProfilePage from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,8 @@ const App = () => (
             <Route path="/loan-application" element={<LoanApplication />} />
             <Route path="/loan-application-dashboard" element={<LoanApplicationDashboardPage />} />
             <Route path="/loan-offers" element={<LoanOffersPage />} />
+            <Route path="/civil-score-check" element={<CivilScoreCheckPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
