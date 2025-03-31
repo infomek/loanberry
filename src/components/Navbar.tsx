@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +8,7 @@ import { NavActions } from './navbar/NavActions';
 import { MobileMenu } from './navbar/MobileMenu';
 import { UserDropdown } from './navbar/UserDropdown';
 
-export const Navbar: React.FC = () => {
+export const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
