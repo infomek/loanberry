@@ -21,10 +21,11 @@ export const LoanCalculator: React.FC = () => {
       setIsCalculating(true);
       try {
         const result = await calculateLoan(amount, term);
-        setMonthlyPayment(result.monthlyPayment);
-        setTotalPayment(result.totalPayment);
-        setInterestRate(result.interestRate);
-        setTotalInterest(result.totalInterest);
+        // Ensure we're setting number values, not strings
+        setMonthlyPayment(Number(result.monthlyPayment));
+        setTotalPayment(Number(result.totalPayment));
+        setInterestRate(Number(result.interestRate));
+        setTotalInterest(Number(result.totalInterest));
       } catch (error) {
         console.error("Error calculating loan:", error);
       } finally {

@@ -39,9 +39,9 @@ interface CivilScoreResponse {
 }
 
 interface LoanCalculationResponse {
-  monthlyPayment: string;
-  totalPayment: string;
-  totalInterest: string;
+  monthlyPayment: number;
+  totalPayment: number;
+  totalInterest: number;
   apr: string;
   interestRate: number;
 }
@@ -250,10 +250,11 @@ export const calculateLoan = async (amount: number, term: number, interestRate?:
   const totalPayment = monthlyPayment * payments;
   const totalInterest = totalPayment - amount;
   
+  // Return numeric values, not strings
   return {
-    monthlyPayment: monthlyPayment.toFixed(2),
-    totalPayment: totalPayment.toFixed(2),
-    totalInterest: totalInterest.toFixed(2),
+    monthlyPayment: monthlyPayment,
+    totalPayment: totalPayment,
+    totalInterest: totalInterest,
     apr: (rate + 0.5).toFixed(2),
     interestRate: rate
   };

@@ -7,17 +7,21 @@ import { toast } from 'sonner';
 import { getLoanOffers, acceptLoanOffer } from '../../services/api';
 import { Loader2 } from 'lucide-react';
 
-interface LoanOffer {
+// Define a new interface that matches the component's expectations
+interface ComponentLoanOffer {
   id: string;
   amount: number;
   term: number;
   interestRate: number;
-  monthlyPayment: number;
+  monthlyPayment: string | number;
   totalPayment: number;
+  featured?: boolean;
+  rate?: string;
+  name?: string;
 }
 
 export const LoanOffers: React.FC = () => {
-  const [offers, setOffers] = useState<LoanOffer[]>([]);
+  const [offers, setOffers] = useState<ComponentLoanOffer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAccepting, setIsAccepting] = useState(false);
   const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
@@ -35,7 +39,8 @@ export const LoanOffers: React.FC = () => {
       setIsLoading(true);
       try {
         const offerData = await getLoanOffers(applicationId);
-        setOffers(offerData);
+        // Cast to the component's expected type
+        setOffers(offerData as unknown as ComponentLoanOffer[]);
       } catch (error) {
         toast.error("Error fetching loan offers");
       } finally {

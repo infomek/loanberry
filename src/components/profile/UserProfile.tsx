@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,7 +33,9 @@ export const UserProfile: React.FC = () => {
     accountName: '',
     bankName: ''
   });
-  
+  const [addingBank, setAddingBank] = useState(false);
+  const bankForm = React.useRef(null);
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -62,7 +63,6 @@ export const UserProfile: React.FC = () => {
       if (result.success) {
         toast.success(result.message);
         setIsEditingBank(false);
-        // Update profile data with new bank details
         setProfileData({
           ...profileData,
           bankDetails
@@ -74,7 +74,53 @@ export const UserProfile: React.FC = () => {
       toast.error("Failed to save bank details");
     }
   };
-  
+
+  const handleAddBankAccount = async () => {
+    if (!bankForm.current) return;
+    
+    const formData = new FormData(bankForm.current);
+    const accountNumber = formData.get('accountNumber') as string;
+    const ifscCode = formData.get('ifscCode') as string;
+    const accountName = formData.get('accountName') as string;
+    const bankName = formData.get('bankName') as string;
+    
+    if (!accountNumber || !ifscCode || !accountName || !bankName) {
+      toast.error('Please fill all required fields');
+      return;
+    }
+    
+    setAddingBank(true);
+    
+    try {
+      const result = await addBankDetails(userProfile!.id, {
+        accountNumber,
+        ifscCode,
+        accountName,
+        bankName,
+        name: accountName,
+        isPrimary: true
+      });
+      
+      if (result.success) {
+        toast.success('Bank account added successfully');
+        setProfileData({
+          ...profileData,
+          bankDetails: {
+            ...bankDetails,
+            accountNumber,
+            ifscCode,
+            accountName,
+            bankName
+          }
+        });
+      }
+    } catch (error) {
+      toast.error('Failed to add bank account');
+    } finally {
+      setAddingBank(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">

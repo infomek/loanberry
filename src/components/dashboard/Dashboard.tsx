@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { getUserLoans } from '../../services/api';
-import { Loader2, CreditCard, CalendarClock, AlertCircle } from 'lucide-react';
+import { Loader2, CreditCard, CalendarClock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface Payment {
@@ -16,16 +16,19 @@ interface Payment {
 
 interface Loan {
   id: string;
+  type: string;
   amount: number;
+  remainingAmount: number;
   term: number;
   interestRate: number;
   monthlyPayment: number;
-  totalPayment: number;
-  status: 'approved' | 'pending' | 'active' | 'completed' | 'rejected';
-  startDate: string;
   nextPaymentDate: string;
+  status: string; // Changed from restricted types to string to match API
+  startDate: string;
+  progress: number;
   remainingPayments: number;
   paymentsMade: number;
+  totalPayment: number;
   payments: Payment[];
 }
 
@@ -37,8 +40,9 @@ export const DashboardContent: React.FC = () => {
     const fetchLoans = async () => {
       setIsLoading(true);
       try {
+        // Type assertion to map from API type to component type
         const loansData = await getUserLoans();
-        setLoans(loansData);
+        setLoans(loansData as unknown as Loan[]);
       } catch (error) {
         console.error("Error fetching loans:", error);
       } finally {

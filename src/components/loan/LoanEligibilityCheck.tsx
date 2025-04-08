@@ -1,138 +1,118 @@
-
 import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { checkEligibility } from '../../services/api';
 import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
+// Define the correct interface to match the API response
 interface EligibilityResult {
-  eligible: boolean;
-  maxAmount?: number;
-  reason?: string;
+  approved: boolean;  // Using approved instead of eligible to match API
+  maxLoanAmount: number;
+  reasons: string[];
+  recommendedProducts: string[];
 }
 
-interface LoanEligibilityCheckProps {
-  amount: number;
-  setAmount: (amount: number) => void;
-  term: number;
-  setTerm: (term: number) => void;
-  income: string;
-  setIncome: (income: string) => void;
-  onEligibilityConfirmed: () => void;
-}
-
-export const LoanEligibilityCheck: React.FC<LoanEligibilityCheckProps> = ({
-  amount,
-  setAmount,
-  term,
-  setTerm,
-  income,
-  setIncome,
-  onEligibilityConfirmed
-}) => {
-  const [isChecking, setIsChecking] = useState(false);
+export const LoanEligibilityCheck: React.FC = () => {
+  const [income, setIncome] = useState('');
+  const [expenses, setExpenses] = useState('');
   const [eligibilityResult, setEligibilityResult] = useState<EligibilityResult | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleEligibilityCheck = async () => {
-    if (!income) {
-      toast.error("Please enter your income");
+  const handleCheckEligibility = async () => {
+    if (!income || !expenses) {
+      toast.error('Please enter both income and expenses.');
       return;
     }
 
-    setIsChecking(true);
+    const incomeValue = parseFloat(income);
+    const expensesValue = parseFloat(expenses);
+
+    if (isNaN(incomeValue) || isNaN(expensesValue)) {
+      toast.error('Please enter valid numeric values for income and expenses.');
+      return;
+    }
+
+    setIsLoading(true);
+    
     try {
-      const result = await checkEligibility(amount, term, parseFloat(income));
-      setEligibilityResult(result);
-      
-      if (result.eligible) {
-        onEligibilityConfirmed();
-      }
+      const result = await checkEligibility(incomeValue, expensesValue);
+      // Use as to convert the result to match our component's expected format
+      setEligibilityResult(result as unknown as EligibilityResult);
     } catch (error) {
-      toast.error("Error checking eligibility");
+      console.error("Error checking eligibility:", error);
+      toast.error("Failed to check loan eligibility");
     } finally {
-      setIsChecking(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex justify-between">
-          <Label>Loan Amount</Label>
-          <span className="text-sm font-medium">₹{amount.toLocaleString()}</span>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Check Your Loan Eligibility</CardTitle>
+        <CardDescription>
+          Enter your monthly income and expenses to see if you qualify for a loan.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="income">Monthly Income</Label>
+          <Input
+            type="number"
+            id="income"
+            placeholder="Enter your monthly income"
+            value={income}
+            onChange={(e) => setIncome(e.target.value)}
+          />
         </div>
-        <Slider
-          value={[amount]}
-          min={1000}
-          max={50000}
-          step={1000}
-          onValueChange={(values) => setAmount(values[0])}
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <div className="flex justify-between">
-          <Label>Loan Term</Label>
-          <span className="text-sm font-medium">{term} months</span>
+        <div className="grid gap-2">
+          <Label htmlFor="expenses">Monthly Expenses</Label>
+          <Input
+            type="number"
+            id="expenses"
+            placeholder="Enter your monthly expenses"
+            value={expenses}
+            onChange={(e) => setExpenses(e.target.value)}
+          />
         </div>
-        <Slider
-          value={[term]}
-          min={12}
-          max={60}
-          step={12}
-          onValueChange={(values) => setTerm(values[0])}
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="income">Annual Income</Label>
-        <Input
-          id="income"
-          type="number"
-          placeholder="e.g. 600000"
-          value={income}
-          onChange={(e) => setIncome(e.target.value)}
-          required
-          className="input-focus"
-        />
-      </div>
-      
-      {eligibilityResult && (
-        <Alert className={`${
-          eligibilityResult.eligible 
-            ? "bg-green-50 border-green-200" 
-            : "bg-amber-50 border-amber-200"
-        }`}>
-          {eligibilityResult.eligible ? (
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
+        <Button onClick={handleCheckEligibility} disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Checking...
+            </>
           ) : (
-            <AlertTriangle className="h-4 w-4 text-amber-600" />
+            "Check Eligibility"
           )}
-          <AlertTitle>
-            {eligibilityResult.eligible 
-              ? "You're eligible!" 
-              : "Unable to offer full amount"}
-          </AlertTitle>
-          <AlertDescription>
-            {eligibilityResult.eligible 
-              ? "Good news! You're eligible for this loan. Please continue with your application."
-              : eligibilityResult.reason + (eligibilityResult.maxAmount 
-                ? ` We can offer up to ₹${eligibilityResult.maxAmount.toFixed(0)}.`
-                : "")}
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      <Button 
-        onClick={handleEligibilityCheck} 
-        className="w-full"
-        disabled={isChecking}>
-        {isChecking ? "Checking..." : "Check Eligibility"}
-      </Button>
-    </div>
+        </Button>
+
+        {eligibilityResult && (
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold">Eligibility Result</h3>
+            {eligibilityResult.approved ? (
+              <>
+                <p className="text-green-500">Congratulations! You are eligible for a loan.</p>
+                <p>Maximum Loan Amount: ₹{eligibilityResult.maxLoanAmount.toLocaleString()}</p>
+                <p>Recommended Products: {eligibilityResult.recommendedProducts.join(', ')}</p>
+              </>
+            ) : (
+              <>
+                <p className="text-red-500">Sorry, you are not currently eligible for a loan.</p>
+                <p>Reasons:</p>
+                <ul>
+                  {eligibilityResult.reasons.map((reason, index) => (
+                    <li key={index}>{reason}</li>
+                  ))}
+                </ul>
+                <p>Recommended Products: {eligibilityResult.recommendedProducts.join(', ')}</p>
+              </>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
