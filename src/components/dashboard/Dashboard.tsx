@@ -42,7 +42,14 @@ export const DashboardContent: React.FC = () => {
       try {
         // Type assertion to map from API type to component type
         const loansData = await getUserLoans();
-        setLoans(loansData as unknown as Loan[]);
+        
+        // Make sure payments is initialized for each loan
+        const processedLoans = loansData.map(loan => ({
+          ...loan,
+          payments: loan.payments || [] // Ensure payments is at least an empty array
+        }));
+        
+        setLoans(processedLoans as Loan[]);
       } catch (error) {
         console.error("Error fetching loans:", error);
       } finally {
@@ -211,7 +218,7 @@ export const DashboardContent: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {loan.payments.length === 0 ? (
+              {!loan.payments || loan.payments.length === 0 ? (
                 <div className="text-center py-4 text-muted-foreground">
                   No payment history available yet.
                 </div>

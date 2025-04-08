@@ -1,144 +1,180 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { Loader2, Check, Star, ArrowRight } from 'lucide-react';
 import { getLoanOffers, acceptLoanOffer } from '../../services/api';
-import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
-// Define a new interface that matches the component's expectations
-interface ComponentLoanOffer {
+interface LoanOffer {
   id: string;
-  amount: number;
+  name: string;
+  rate: string;
   term: number;
-  interestRate: number;
+  amount: number;
   monthlyPayment: string | number;
-  totalPayment: number;
-  featured?: boolean;
-  rate?: string;
-  name?: string;
+  totalPayment?: number;
+  featured: boolean;
 }
 
-export const LoanOffers: React.FC = () => {
-  const [offers, setOffers] = useState<ComponentLoanOffer[]>([]);
+interface LoanOffersProps {
+  applicationId?: string;
+  onOfferAccepted?: (offerId: string, response: any) => void;
+}
+
+export const LoanOffers: React.FC<LoanOffersProps> = ({ applicationId, onOfferAccepted }) => {
+  const [offers, setOffers] = useState<LoanOffer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAccepting, setIsAccepting] = useState(false);
-  const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null);
+  const [acceptingId, setAcceptingId] = useState<string | null>(null);
   const navigate = useNavigate();
-  const location = useLocation();
-  const applicationId = location.state?.applicationId;
-
+  
   useEffect(() => {
-    if (!applicationId) {
-      navigate('/loan-application');
-      return;
-    }
-
     const fetchOffers = async () => {
-      setIsLoading(true);
       try {
-        const offerData = await getLoanOffers(applicationId);
-        // Cast to the component's expected type
-        setOffers(offerData as unknown as ComponentLoanOffer[]);
+        setIsLoading(true);
+        const fetchedOffers = await getLoanOffers(applicationId);
+        setOffers(fetchedOffers);
       } catch (error) {
-        toast.error("Error fetching loan offers");
+        console.error("Error fetching loan offers:", error);
+        toast.error("Failed to fetch loan offers");
       } finally {
         setIsLoading(false);
       }
     };
-
-    fetchOffers();
-  }, [applicationId, navigate]);
-
-  const handleAcceptOffer = async (offerId: string) => {
-    setSelectedOfferId(offerId);
-    setIsAccepting(true);
     
+    fetchOffers();
+  }, [applicationId]);
+  
+  const handleAcceptOffer = async (offerId: string) => {
     try {
-      const result = await acceptLoanOffer(offerId);
+      setAcceptingId(offerId);
+      const response = await acceptLoanOffer(offerId);
       
-      if (result.success) {
-        toast.success("Loan offer accepted successfully");
-        navigate('/dashboard');
+      toast.success(response.message);
+      
+      if (onOfferAccepted) {
+        onOfferAccepted(offerId, response);
       } else {
-        toast.error("Error accepting loan offer");
+        navigate('/dashboard');
       }
     } catch (error) {
-      toast.error("Error accepting loan offer");
+      console.error("Error accepting offer:", error);
+      toast.error("Failed to accept loan offer");
     } finally {
-      setIsAccepting(false);
+      setAcceptingId(null);
     }
   };
-
+  
+  const formatCurrency = (value: number | string) => {
+    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 2
+    }).format(numValue);
+  };
+  
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="animate-spin h-8 w-8 text-primary" />
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mr-2" />
+        <p>Loading loan offers...</p>
       </div>
     );
   }
-
+  
+  if (!offers || offers.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>No Offers Available</CardTitle>
+          <CardDescription>We couldn't find any loan offers matching your application.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>Try adjusting your loan amount or term and apply again.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+  
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Your Personalized Loan Offers</h2>
-        <p className="text-muted-foreground">
-          We've found {offers.length} loan offers based on your application. Select the one that best fits your needs.
-        </p>
-      </div>
-
+    <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {offers.map((offer) => (
-          <Card key={offer.id} className={`glass overflow-hidden transition-all card-hover ${
-            selectedOfferId === offer.id ? 'border-primary ring-2 ring-primary/20' : ''
-          }`}>
-            <CardHeader className="bg-primary/5 pb-2">
-              <CardTitle className="text-xl text-center">₹{offer.amount.toLocaleString()}</CardTitle>
-              <CardDescription className="text-center">
-                {offer.term} month term
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Interest Rate</span>
-                <span className="font-medium">{offer.interestRate}%</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Monthly Payment</span>
-                <span className="font-medium">₹{offer.monthlyPayment.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total Repayment</span>
-                <span className="font-medium">₹{offer.totalPayment.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Total Interest</span>
-                <span className="font-medium">₹{(offer.totalPayment - offer.amount).toFixed(2)}</span>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button 
-                onClick={() => handleAcceptOffer(offer.id)} 
-                className="w-full"
-                disabled={isAccepting}
-              >
-                {isAccepting && selectedOfferId === offer.id ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : "Accept Offer"}
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
-      <div className="text-center">
-        <Button variant="outline" onClick={() => navigate('/loan-application')} className="mx-auto">
-          Return to Application
-        </Button>
+        {offers.map(offer => {
+          const monthlyPaymentNumber = typeof offer.monthlyPayment === 'string' ? 
+            parseFloat(offer.monthlyPayment) : offer.monthlyPayment;
+          
+          return (
+            <Card key={offer.id} className={`relative overflow-hidden ${offer.featured ? 'border-2 border-primary shadow-lg' : ''}`}>
+              {offer.featured && (
+                <div className="absolute top-0 right-0">
+                  <div className="bg-primary text-primary-foreground px-3 py-1 rounded-bl-lg flex items-center">
+                    <Star className="h-4 w-4 mr-1" />
+                    <span className="text-xs font-medium">Best Value</span>
+                  </div>
+                </div>
+              )}
+              
+              <CardHeader>
+                <CardTitle>{offer.name}</CardTitle>
+                <CardDescription>
+                  {formatCurrency(offer.amount)} over {offer.term} months
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                <div className="flex flex-col items-center space-y-2 py-2">
+                  <span className="text-3xl font-bold">{offer.rate}%</span>
+                  <span className="text-sm text-muted-foreground">Interest Rate</span>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Monthly Payment</span>
+                    <span className="font-semibold">
+                      {typeof monthlyPaymentNumber === 'number' ? 
+                        monthlyPaymentNumber.toFixed(2) : 
+                        monthlyPaymentNumber}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-sm text-muted-foreground">Total Payment</span>
+                    <span className="font-semibold">
+                      {formatCurrency(offer.totalPayment || (monthlyPaymentNumber * offer.term))}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+              
+              <CardFooter>
+                <Button 
+                  className="w-full" 
+                  onClick={() => handleAcceptOffer(offer.id)}
+                  disabled={!!acceptingId}
+                >
+                  {acceptingId === offer.id ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : offer.featured ? (
+                    <>
+                      <Check className="mr-2 h-4 w-4" /> 
+                      Accept Offer
+                    </>
+                  ) : (
+                    <>
+                      Select Offer 
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+              </CardFooter>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
