@@ -53,18 +53,11 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
             Home
           </Link>
           <Link
-            to="/dashboard"
-            className="hover:text-primary"
-            onClick={() => setOpen(false)}
-          >
-            Dashboard
-          </Link>
-          <Link
             to="/loan-application-dashboard"
             className="hover:text-primary"
             onClick={() => setOpen(false)}
           >
-            Apply for Loan
+            Loans
           </Link>
           <Link
             to="/civil-score-check"

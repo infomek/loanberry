@@ -1,67 +1,68 @@
 
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LoanEligibilityCheck } from './LoanEligibilityCheck';
+import React, { useState } from 'react';
 import { LoanDetailsForm } from './LoanDetailsForm';
-import { useLoanApplication } from '../../hooks/useLoanApplication';
+import { LoanEligibilityCheck } from './LoanEligibilityCheck';
+import { LoanOffers } from './LoanOffers';
+import { useNavigate } from 'react-router-dom';
 
-export const LoanApplicationForm: React.FC = () => {
-  const {
-    step,
-    amount,
-    term,
-    purpose,
-    income,
-    employment,
-    name,
-    email,
-    isSubmitting,
-    setStep,
-    setAmount,
-    setTerm,
-    setPurpose,
-    setIncome,
-    setEmployment,
-    setName,
-    setEmail,
-    handleSubmit
-  } = useLoanApplication();
+export const LoanApplicationWrapper: React.FC = () => {
+  const [step, setStep] = useState(1);
+  const [amount, setAmount] = useState(5000);
+  const [term, setTerm] = useState(12);
+  const [income, setIncome] = useState('');
+  const navigate = useNavigate();
+
+  const handleEligibilityConfirmed = () => {
+    setStep(3);
+  };
+
+  const handleDetailsSubmitted = () => {
+    setStep(2);
+  };
+
+  const handleOfferAccepted = () => {
+    // Navigate to dashboard after accepting an offer
+    navigate('/dashboard');
+  };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto glass">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">Loan Application</CardTitle>
-        <CardDescription className="text-center">
-          {step === 1 ? "Let's check your eligibility first" : "Complete your application"}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {step === 1 ? (
-          <LoanEligibilityCheck
-            amount={amount}
-            setAmount={setAmount}
-            term={term}
-            setTerm={setTerm}
-            income={income}
-            setIncome={setIncome}
-            onEligibilityConfirmed={() => setStep(2)}
-          />
-        ) : (
-          <LoanDetailsForm
-            purpose={purpose}
-            setPurpose={setPurpose}
-            employment={employment}
-            setEmployment={setEmployment}
-            name={name}
-            setName={setName}
-            email={email}
-            setEmail={setEmail}
-            onSubmit={handleSubmit}
-            isSubmitting={isSubmitting}
-            onBack={() => setStep(1)}
-          />
-        )}
-      </CardContent>
-    </Card>
+    <div className="container max-w-4xl mx-auto p-6">
+      <div className="steps mb-10">
+        <div className="flex justify-between">
+          <div className={`step-item ${step >= 1 ? 'active' : ''}`}>Loan Details</div>
+          <div className={`step-item ${step >= 2 ? 'active' : ''}`}>Eligibility Check</div>
+          <div className={`step-item ${step >= 3 ? 'active' : ''}`}>Offers</div>
+        </div>
+      </div>
+
+      {step === 1 && (
+        <LoanDetailsForm 
+          onSubmit={handleDetailsSubmitted}
+          amount={amount}
+          setAmount={setAmount}
+          term={term}
+          setTerm={setTerm}
+          income={income}
+          setIncome={setIncome}
+        />
+      )}
+
+      {step === 2 && (
+        <LoanEligibilityCheck 
+          amount={amount}
+          term={term}
+          income={income}
+          onEligibilityConfirmed={handleEligibilityConfirmed} 
+        />
+      )}
+
+      {step === 3 && (
+        <LoanOffers
+          amount={amount}
+          term={term}
+          onOfferAccepted={handleOfferAccepted}
+        />
+      )}
+    </div>
   );
 };
