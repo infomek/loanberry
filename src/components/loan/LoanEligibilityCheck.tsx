@@ -54,7 +54,7 @@ export const LoanEligibilityCheck: React.FC<LoanEligibilityCheckProps> = ({
       const result = await checkEligibility(amount, term, parseFloat(income));
       setEligibilityResult(result);
       
-      if (result.eligible) {
+      if (result.approved) {
         onEligibilityConfirmed();
       }
     } catch (error) {
