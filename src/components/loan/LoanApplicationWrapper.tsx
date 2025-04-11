@@ -49,10 +49,10 @@ export const LoanApplicationWrapper: React.FC = () => {
 
       {step === 2 && (
         <LoanEligibilityCheck 
+          onEligibilityConfirmed={handleEligibilityConfirmed}
           amount={amount}
           term={term}
           income={income}
-          onEligibilityConfirmed={handleEligibilityConfirmed} 
         />
       )}
 
