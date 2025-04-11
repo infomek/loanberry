@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Shield, User, FileText, Settings, CreditCard, LayoutDashboard } from 'lucide-react';
 
 export const MobileMenu = ({
   open,
@@ -47,60 +46,11 @@ export const MobileMenu = ({
             Home
           </Link>
           <Link
-            to="/dashboard"
-            className="hover:text-primary flex items-center gap-2"
+            to="/loan-application-dashboard"
+            className="hover:text-primary"
             onClick={() => setOpen(false)}
           >
-            <LayoutDashboard className="h-5 w-5" />
-            Dashboard
-          </Link>
-          <Link
-            to="/applications"
-            className="hover:text-primary flex items-center gap-2"
-            onClick={() => setOpen(false)}
-          >
-            <LayoutDashboard className="h-5 w-5" />
-            Applications
-          </Link>
-          <Link
-            to="/payments"
-            className="hover:text-primary flex items-center gap-2"
-            onClick={() => setOpen(false)}
-          >
-            <CreditCard className="h-5 w-5" />
-            Payments
-          </Link>
-          <Link
-            to="/documents"
-            className="hover:text-primary flex items-center gap-2"
-            onClick={() => setOpen(false)}
-          >
-            <FileText className="h-5 w-5" />
-            Documents
-          </Link>
-          <Link
-            to="/civil-score-check"
-            className="hover:text-primary flex items-center gap-2"
-            onClick={() => setOpen(false)}
-          >
-            <Shield className="h-5 w-5" />
-            Check Civil Score
-          </Link>
-          <Link
-            to="/profile"
-            className="hover:text-primary flex items-center gap-2"
-            onClick={() => setOpen(false)}
-          >
-            <User className="h-5 w-5" />
-            My Profile
-          </Link>
-          <Link
-            to="/settings"
-            className="hover:text-primary flex items-center gap-2"
-            onClick={() => setOpen(false)}
-          >
-            <Settings className="h-5 w-5" />
-            Settings
+            Loans
           </Link>
           <Button
             variant="outline"

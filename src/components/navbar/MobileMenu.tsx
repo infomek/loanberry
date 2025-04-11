@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Shield, User } from 'lucide-react';
 
 interface MobileMenuProps {
   open: boolean;
@@ -58,22 +57,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
             onClick={() => setOpen(false)}
           >
             Loans
-          </Link>
-          <Link
-            to="/civil-score-check"
-            className="hover:text-primary flex items-center gap-2"
-            onClick={() => setOpen(false)}
-          >
-            <Shield className="h-5 w-5" />
-            Check Civil Score
-          </Link>
-          <Link
-            to="/profile"
-            className="hover:text-primary flex items-center gap-2"
-            onClick={() => setOpen(false)}
-          >
-            <User className="h-5 w-5" />
-            My Profile
           </Link>
           <Button
             variant="outline"
