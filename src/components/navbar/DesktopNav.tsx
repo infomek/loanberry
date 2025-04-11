@@ -21,6 +21,22 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({ isAuthenticated }) => {
       >
         Loans
       </Link>
+      {isAuthenticated && (
+        <>
+          <Link
+            to="/payments"
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Payments
+          </Link>
+          <Link
+            to="/settings"
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Settings
+          </Link>
+        </>
+      )}
     </nav>
   );
 };

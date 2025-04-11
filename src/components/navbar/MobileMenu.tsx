@@ -58,6 +58,20 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
           >
             Loans
           </Link>
+          <Link
+            to="/payments"
+            className="hover:text-primary"
+            onClick={() => setOpen(false)}
+          >
+            Payments
+          </Link>
+          <Link
+            to="/settings"
+            className="hover:text-primary"
+            onClick={() => setOpen(false)}
+          >
+            Settings
+          </Link>
           <Button
             variant="outline"
             className="mt-2"

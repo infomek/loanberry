@@ -52,6 +52,20 @@ export const MobileMenu = ({
           >
             Loans
           </Link>
+          <Link
+            to="/payments"
+            className="hover:text-primary"
+            onClick={() => setOpen(false)}
+          >
+            Payments
+          </Link>
+          <Link
+            to="/settings"
+            className="hover:text-primary"
+            onClick={() => setOpen(false)}
+          >
+            Settings
+          </Link>
           <Button
             variant="outline"
             className="mt-2"
