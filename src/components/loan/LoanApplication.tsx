@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LoanApplicationForm as LoanApplicationWrapper } from './LoanApplicationWrapper';
+import { LoanApplicationWrapper } from './LoanApplicationWrapper';
 
 export const LoanApplicationForm: React.FC = () => {
   return <LoanApplicationWrapper />;

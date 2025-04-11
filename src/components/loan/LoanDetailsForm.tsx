@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,34 +5,49 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface LoanDetailsFormProps {
-  purpose: string;
-  setPurpose: (purpose: string) => void;
-  employment: string;
-  setEmployment: (employment: string) => void;
-  name: string;
-  setName: (name: string) => void;
-  email: string;
-  setEmail: (email: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  isSubmitting: boolean;
-  onBack: () => void;
+  amount: number;
+  setAmount: (amount: number) => void;
+  term: number;
+  setTerm: (term: number) => void;
+  income: string;
+  setIncome: (income: string) => void;
+  onSubmit: () => void;
+  purpose?: string;
+  setPurpose?: (purpose: string) => void;
+  employment?: string;
+  setEmployment?: (employment: string) => void;
+  name?: string;
+  setName?: (name: string) => void;
+  email?: string;
+  setEmail?: (email: string) => void;
+  isSubmitting?: boolean;
+  onBack?: () => void;
 }
 
 export const LoanDetailsForm: React.FC<LoanDetailsFormProps> = ({
-  purpose,
-  setPurpose,
-  employment,
-  setEmployment,
-  name,
-  setName,
-  email,
-  setEmail,
+  purpose = '',
+  setPurpose = () => {},
+  employment = '',
+  setEmployment = () => {},
+  name = '',
+  setName = () => {},
+  email = '',
+  setEmail = () => {},
   onSubmit,
-  isSubmitting,
-  onBack
+  isSubmitting = false,
+  onBack = () => {},
+  amount,
+  setAmount,
+  term,
+  setTerm,
+  income,
+  setIncome
 }) => {
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      onSubmit();
+    }} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="purpose">Loan Purpose</Label>
         <Select value={purpose} onValueChange={setPurpose} required>
@@ -96,12 +110,14 @@ export const LoanDetailsForm: React.FC<LoanDetailsFormProps> = ({
         {isSubmitting ? "Submitting..." : "Submit Application"}
       </Button>
       
-      <Button 
-        variant="outline" 
-        onClick={onBack} 
-        className="w-full">
-        Back to Eligibility
-      </Button>
+      {onBack && (
+        <Button 
+          variant="outline" 
+          onClick={onBack} 
+          className="w-full">
+          Back to Eligibility
+        </Button>
+      )}
     </form>
   );
 };

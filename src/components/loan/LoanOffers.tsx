@@ -20,10 +20,17 @@ interface LoanOffer {
 
 interface LoanOffersProps {
   applicationId?: string;
-  onOfferAccepted?: (offerId: string, response: any) => void;
+  amount?: number;
+  term?: number;
+  onOfferAccepted?: (offerId?: string, response?: any) => void;
 }
 
-export const LoanOffers: React.FC<LoanOffersProps> = ({ applicationId, onOfferAccepted }) => {
+export const LoanOffers: React.FC<LoanOffersProps> = ({ 
+  applicationId,
+  amount,
+  term, 
+  onOfferAccepted 
+}) => {
   const [offers, setOffers] = useState<LoanOffer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
@@ -33,7 +40,16 @@ export const LoanOffers: React.FC<LoanOffersProps> = ({ applicationId, onOfferAc
     const fetchOffers = async () => {
       try {
         setIsLoading(true);
-        const fetchedOffers = await getLoanOffers(applicationId);
+        // Use applicationId if provided, otherwise generate mock offers based on amount and term
+        let fetchedOffers;
+        if (applicationId) {
+          fetchedOffers = await getLoanOffers(applicationId);
+        } else if (amount && term) {
+          // Generate mock offers based on amount and term
+          fetchedOffers = generateMockOffers(amount, term);
+        } else {
+          fetchedOffers = [];
+        }
         setOffers(fetchedOffers);
       } catch (error) {
         console.error("Error fetching loan offers:", error);
@@ -44,14 +60,53 @@ export const LoanOffers: React.FC<LoanOffersProps> = ({ applicationId, onOfferAc
     };
     
     fetchOffers();
-  }, [applicationId]);
+  }, [applicationId, amount, term]);
+  
+  // Helper function to generate mock offers if no applicationId provided
+  const generateMockOffers = (loanAmount: number, loanTerm: number) => {
+    const baseRate = 8 + Math.random() * 4;
+    return [
+      {
+        id: 'offer-1',
+        name: 'Standard Loan',
+        rate: baseRate.toFixed(2),
+        term: loanTerm,
+        amount: loanAmount,
+        monthlyPayment: calculateMonthlyPayment(loanAmount, baseRate, loanTerm).toFixed(2),
+        featured: false
+      },
+      {
+        id: 'offer-2',
+        name: 'Premium Loan',
+        rate: (baseRate - 1).toFixed(2),
+        term: loanTerm,
+        amount: loanAmount,
+        monthlyPayment: calculateMonthlyPayment(loanAmount, baseRate - 1, loanTerm).toFixed(2),
+        featured: true
+      },
+      {
+        id: 'offer-3',
+        name: 'Basic Loan',
+        rate: (baseRate + 1).toFixed(2),
+        term: loanTerm,
+        amount: loanAmount,
+        monthlyPayment: calculateMonthlyPayment(loanAmount, baseRate + 1, loanTerm).toFixed(2),
+        featured: false
+      }
+    ];
+  };
+  
+  const calculateMonthlyPayment = (principal: number, rate: number, term: number) => {
+    const monthlyRate = rate / 100 / 12;
+    return principal * monthlyRate * Math.pow(1 + monthlyRate, term) / (Math.pow(1 + monthlyRate, term) - 1);
+  };
   
   const handleAcceptOffer = async (offerId: string) => {
     try {
       setAcceptingId(offerId);
       const response = await acceptLoanOffer(offerId);
       
-      toast.success(response.message);
+      toast.success(response.message || "Offer accepted successfully");
       
       if (onOfferAccepted) {
         onOfferAccepted(offerId, response);
@@ -134,7 +189,7 @@ export const LoanOffers: React.FC<LoanOffersProps> = ({ applicationId, onOfferAc
                     <span className="text-sm text-muted-foreground">Monthly Payment</span>
                     <span className="font-semibold">
                       {typeof monthlyPaymentNumber === 'number' ? 
-                        monthlyPaymentNumber.toFixed(2) : 
+                        formatCurrency(monthlyPaymentNumber) : 
                         monthlyPaymentNumber}
                     </span>
                   </div>
